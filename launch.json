@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Containers: Node.js Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "platform": "node",
+            "node": {
+                "package": "${workspaceFolder}/instagram_ai_assistant/API/package.json",
+                "localRoot": "${workspaceFolder}/instagram_ai_assistant/API"
+            }
+        }
+    ]
+}
