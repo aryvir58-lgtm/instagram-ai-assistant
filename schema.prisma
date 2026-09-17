@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model InstagramAccount {
+  id              String   @id @default(cuid())
+  instagramUserId String   @unique
+  username        String?
+  accessToken     String
+  tokenExpiresAt  DateTime?
+  connected       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  conversations   Conversation[]
+}
+
+model Conversation {
+  id                String   @id @default(cuid())
+  instagramAccountId String
+  externalUserId    String
+  username          String?
+  aiEnabled         Boolean  @default(true)
+  lastMessageAt     DateTime?
+  createdAt         DateTime @default(now())
+  account           InstagramAccount @relation(fields: [instagramAccountId], references: [id])
+  messages          Message[]
+  @@index([instagramAccountId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  externalId     String?
+  senderId       String
+  text           String?
+  direction      String
+  messageType    String @default("text")
+  createdAt      DateTime @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  @@index([conversationId, createdAt])
+}
