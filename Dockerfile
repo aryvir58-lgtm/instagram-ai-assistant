@@ -10,8 +10,13 @@ RUN npm install
 
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build TypeScript
 RUN npm run build
 
+# Remove development dependencies
 RUN npm prune --omit=dev
 
 EXPOSE 3000
