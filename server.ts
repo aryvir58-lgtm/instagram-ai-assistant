@@ -8,7 +8,7 @@ dotenv.config();
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const getOpenAI = () => {\n  const apiKey = process.env.OPENAI_API_KEY;\n  if (!apiKey) return null;\n  return new OpenAI({ apiKey });\n};
 const port = Number(process.env.PORT || 3000);
 
 app.register(cors, { origin: true });
@@ -65,7 +65,7 @@ app.post("/ai/reply-preview", async (req, reply) => {
   const body = req.body as { message?: string; context?: string };
   if (!body.message) return reply.code(400).send({ error: "message is required" });
 
-  const response = await openai.responses.create({
+  const openai = getOpenAI();\n  if (!openai) {\n    return reply.code(503).send({ error: "OPENAI_API_KEY is not configured in Railway Variables." });\n  }\n\n  const response = await openai.responses.create({
     model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
     input: [
       { role: "system", content: "You are a friendly Instagram assistant. Reply briefly in natural Hinglish. Never invent facts. If unsure, say human help is needed." },
