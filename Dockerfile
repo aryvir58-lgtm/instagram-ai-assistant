@@ -4,6 +4,7 @@ ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY schema.prisma ./
 RUN npm install
 
 COPY . .
